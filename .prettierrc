@@ -1,0 +1,21 @@
+{
+    "singleQuote": true,
+    "trailingComma": "all",
+    "bracketSpacing": false,
+    "tabWidth": 4,
+    "printWidth": 100,
+    "overrides": [
+        {
+            "files": ["client_server_shared/rollbar_error_sanitizer.tsx"],
+            "options": {
+                "trailingComma": "es5"
+            }
+        },
+        {
+            "files": ["server_shared/integrations/zapier/zapier_airtable_script.js"],
+            "options": {
+                "trailingComma": "es5"
+            }
+        }
+    ]
+}
