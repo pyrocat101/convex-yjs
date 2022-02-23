@@ -2,6 +2,7 @@ import {ReactClient} from '@convex-dev/react';
 import 'react-quill/dist/quill.snow.css';
 import * as Y from 'yjs';
 import {SyncMessage} from './common';
+import _ from 'lodash-es';
 
 export class ConvexProvider {
     private _doc: Y.Doc;
