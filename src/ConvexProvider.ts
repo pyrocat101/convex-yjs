@@ -8,7 +8,6 @@ export class ConvexProvider {
     private _doc: Y.Doc;
     private _convex: ReactClient;
     private _unwatch: () => void;
-    private _firstSync = true;
     private _messages: SyncMessage[];
 
     constructor(doc: Y.Doc, convex: ReactClient) {
@@ -33,36 +32,22 @@ export class ConvexProvider {
     };
 
     private _onReadSyncMessagesUpdate = (messages: SyncMessage[]) => {
-        if (this._firstSync) {
-            this._messages = messages;
-            Y.transact(
-                this._doc,
-                () => {
-                    for (const message of messages) {
-                        Y.applyUpdate(this._doc, new Uint8Array(message.value));
-                    }
-                },
-                'readSyncMessages', // origin
-            );
-            this._firstSync = false;
-        } else {
-            // Apply only new messages
-            const lastSyncMessageIndex = _.findLastIndex(
-                messages,
-                (message) => message._id === _.last(this._messages)?._id ?? null,
-            );
-            this._messages = messages;
-            Y.transact(
-                this._doc,
-                () => {
-                    for (let i = lastSyncMessageIndex + 1; i < messages.length; i++) {
-                        const message = messages[i];
-                        Y.applyUpdate(this._doc, new Uint8Array(message.value));
-                    }
-                },
-                'peer', // origin
-            );
-        }
+        // Apply only new messages
+        const lastSyncMessageIndex = _.findLastIndex(
+            messages,
+            (message) => message._id === _.last(this._messages)?._id ?? null,
+        );
+        this._messages = messages;
+        Y.transact(
+            this._doc,
+            () => {
+                for (let i = lastSyncMessageIndex + 1; i < messages.length; i++) {
+                    const message = messages[i];
+                    Y.applyUpdate(this._doc, new Uint8Array(message.value));
+                }
+            },
+            'peer', // origin
+        );
     };
 }
 
